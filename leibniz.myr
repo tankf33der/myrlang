@@ -1,0 +1,12 @@
+use std
+
+const main = {
+	var x: flt64 = 1.0
+	var pi: flt64 = 1.0
+	for var i = 2; i < 1000002; i++ 
+		x *= -1.0
+		pi += x / (2 * i - 1: flt64)
+	;;
+	pi *= (4: flt64)
+	std.put("pi: {}\n", pi)	
+} 

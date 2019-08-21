@@ -1,0 +1,43 @@
+//https://github.com/google/wycheproof/blob/master/testvectors/x25519_test.json
+use std
+use bio
+use crypto
+use iter
+
+const main = {
+	var fd = std.try(bio.open("x25519_test.csv", bio.Rd))
+	var i = 1
+
+	while true
+		match bio.readln(fd)
+		| `std.Err _: break
+		| `std.Ok l:
+			var line = std.strsplit(l, ",")
+			var prv = unhex(line[0])
+			var pub = unhex(line[1])
+			var shr = unhex(line[2])
+			var exp: byte[32]
+
+			crypto.curve25519(exp[:], prv[:], pub[:])
+			std.put("{}:{r},{r}\n", i++, exp[:], shr[:])
+			std.slfree(line)
+			std.slfree(l)
+		;;
+	;;	
+
+	bio.close(fd)	
+	
+}
+
+const unhex = {s
+   var bb, o
+
+   o = 0
+   bb = std.slalloc(s.len / 2)
+   for c : iter.bychunk(s, 2)
+      bb[o++] = \
+         std.charval((c[0] : char), 16)*16 + \
+         std.charval((c[1] : char), 16)
+   ;;
+   -> bb
+}
